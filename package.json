@@ -1,7 +1,10 @@
 {
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.3.0",
     "mongoose": "^9.11.2",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   }
 }

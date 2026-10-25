@@ -34,6 +34,14 @@ const staffSchema=new mongoose.Schema({
         required: true,
         min: 0
     },
+    username:{
+        required:true,
+        type:String
+    },
+    password:{
+        required:true,
+        type:String
+    }
 
 })
 
