@@ -5,10 +5,12 @@ const app=express();
 // const staff=require("./models/staff.js")
 const db=require("./db.js")
 const staffRouter=require("./routes/staffRouter.js")
+const passport = require("./auth.js");
 
 
 //body-parser
 app.use(express.json())
+
 
 
 // Log every incoming request
@@ -18,13 +20,17 @@ const logRequest = (req, res, next) => {
 };
 app.use(logRequest);
 
+// passport initial 
+app.use(passport.initialize());
+const authentication=passport.authenticate('local',{session:false});
+
 // home api....
-app.get('/',(req,res)=>{
+app.get('/',authentication,(req,res)=>{
     res.send("welcome to our hotel management system")
 })
 
 // connect staff router
-app.use("/staff",staffRouter);
+app.use("/staff",authentication,staffRouter);
 
 app.listen(3000,()=>{
     console.log("server is listing")
