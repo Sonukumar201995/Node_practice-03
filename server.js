@@ -30,7 +30,7 @@ app.get('/',authentication,(req,res)=>{
 })
 
 // connect staff router
-app.use("/staff",authentication,staffRouter);
+app.use("/staff",staffRouter);
 
 app.listen(3000,()=>{
     console.log("server is listing")

@@ -15,7 +15,8 @@ passport.use(
                 });
             }
 
-            const isPassMatch = user.password === password; // Better: bcrypt.compare()
+            //const isPassMatch = user.password === password; // Better: bcrypt.compare()
+            const isPassMatch = await user.comparePassword(password);
 
             if (isPassMatch) {
                 return done(null, user);
