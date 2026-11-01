@@ -2,6 +2,8 @@ const express=require("express")
 const router=express.Router();
 const staff=require('../models/staff.js');
 
+const {jwtAuthMiddleware,generateToken}=require("../jwt.js"); //jwt import
+
 router.get("/",async(req,res)=>{
     try
     {
