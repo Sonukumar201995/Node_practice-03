@@ -59,6 +59,97 @@ router.post("/",async(req,res)=>{
         res.status(500).json({error :"Interval servaer error"})
     }
 })
+// login router
+
+
+router.post("/login", async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Find staff
+       const user = await staff.findOne({ username });
+
+        if (!user) {
+            return res.status(401).json({
+                error: "Invalid username or password"
+            });
+        }
+
+        // Compare password
+        const isPasswordMatch =
+            await user.comparePassword(password);
+
+        if (!isPasswordMatch) {
+            return res.status(401).json({
+                error: "Invalid username or password"
+            });
+        }
+
+        // Create payload
+        const payload = {
+            id: user._id,
+            username: user.username
+        };
+
+        // Generate token
+        const token = generateToken(payload);
+
+        console.log("Generated Token:", token);
+
+        return res.status(200).json({
+            message: "Login successful",
+            token: token
+        });
+
+    } catch (error) {
+        console.log("Login Error:", error);
+
+        return res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+});
+
+
+// sign up router..
+router.post("/signup", async (req, res) => {
+    try {
+        const data = req.body;
+
+        // Create new staff
+        const newStaff = new staff(data);
+
+        // Save data in database
+        const response = await newStaff.save();
+
+        console.log("Data saved successfully");
+
+        // Create payload
+        const payload = {
+            id: response.id,
+            username: response.username
+        };
+
+        console.log(JSON.stringify(payload));
+
+        // Generate JWT token
+        const token = generateToken(payload);
+
+        console.log("Token is:", token);
+
+        // Send response
+        res.status(200).json({
+            response: response,
+            token: token
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+});
 
 // put api
 

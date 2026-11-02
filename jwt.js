@@ -1,29 +1,49 @@
 
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const jwtAuthMiddleware = (req, res, next) => {
+    const authHeader = req.headers.authorization;
 
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({ error: "unauthorized" });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+            error: "Token not provided"
+        });
     }
 
+    const token = authHeader.split(" ")[1];
+
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
 
         req.user = decoded;
         next();
 
     } catch (error) {
-        console.log(error);
-        return res.status(401).json({ error: "invalid token" });
+        console.log("JWT Error:", error.message);
+
+        return res.status(401).json({
+            error: "Invalid token"
+        });
     }
 };
 
-// function generate token
+// Generate JWT Token
 const generateToken = (userData) => {
-    return jwt.sign(userData, process.env.JWT_SECRET);
+    if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET is missing in .env");
+    }
+
+    return jwt.sign(
+        userData,
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+    );
 };
 
-module.exports = { jwtAuthMiddleware, generateToken };
+module.exports = {
+    jwtAuthMiddleware,
+    generateToken
+};
